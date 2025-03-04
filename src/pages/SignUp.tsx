@@ -10,6 +10,9 @@ type TSignUpFormData = {
   email: string;
   password: string;
   confirmPassword: string;
+  address: string;
+  phone: string;
+  city: string;
 };
 
 const SignUp = () => {
@@ -29,9 +32,14 @@ const SignUp = () => {
         name: data.name,
         email: data.email,
         password: data.password,
+        address: data.address,
+        phone: data.phone,
+        city: data.city,
       };
+      console.log(userInfo);
+      const res = await registerUser(userInfo).unwrap();
+      console.log(res);
 
-      await registerUser(userInfo).unwrap();
       toast.success("Registration successful! Redirecting to login...", {
         autoClose: 2000,
       });
@@ -40,6 +48,8 @@ const SignUp = () => {
         navigate("/login");
       }, 2000);
     } catch (error: any) {
+      console.log(error);
+
       toast.error(
         error.data?.message ||
           "An error occurred during registration. Please try again."
@@ -49,7 +59,7 @@ const SignUp = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="card w-96 bg-base-100 shadow-xl p-6">
+      <div className="card w-lg my-10 bg-base-100 shadow-xl p-6">
         <h2 className="text-2xl font-bold text-center mb-4">Sign Up</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="form-control w-full">
@@ -87,6 +97,61 @@ const SignUp = () => {
               <p className="text-red-500 text-sm mt-1">
                 {errors.email.message}
               </p>
+            )}
+          </div>
+
+          <div className="form-control w-full mt-3">
+            <label className="label">
+              <span className="label-text">Phone</span>
+            </label>
+            <input
+              type="text"
+              {...register("phone", {
+                required: "Phone is required",
+                pattern: {
+                  value: /^[0-9]{10,15}$/,
+                  message: "Invalid phone number",
+                },
+              })}
+              placeholder="Enter your phone number"
+              className="input input-bordered w-full"
+            />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
+
+          <div className="form-control w-full mt-3">
+            <label className="label">
+              <span className="label-text">Address</span>
+            </label>
+            <input
+              type="text"
+              {...register("address", { required: "Address is required" })}
+              placeholder="Enter your address"
+              className="input input-bordered w-full"
+            />
+            {errors.address && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.address.message}
+              </p>
+            )}
+          </div>
+
+          <div className="form-control w-full mt-3">
+            <label className="label">
+              <span className="label-text">City</span>
+            </label>
+            <input
+              type="text"
+              {...register("city", { required: "City is required" })}
+              placeholder="Enter your city"
+              className="input input-bordered w-full"
+            />
+            {errors.city && (
+              <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>
             )}
           </div>
 
